@@ -188,14 +188,22 @@ async function saveAll() {
 // --- events ---
 document.addEventListener("DOMContentLoaded", () => {
   loadLocal();
-  $("loginBtn").addEventListener("click", () => {
+  $("loginBtn").addEventListener("click", async () => {
     const p = $("pass").value.trim();
+    const url = $("workerUrl").value.trim();
     if (!p) return showErr("Введите пароль");
-    sessionPass = p;
-    $("loginCard").style.display = "none";
-    $("app").style.display = "block";
-    $("logout").style.display = "inline-block";
-    loadGallery(); loadContent();
+    if (!url) return showErr("Сначала укажите URL Worker");
+    try {
+      const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: p, files: {}, deletePaths: [] }) });
+      if (!r.ok) { showErr("Неверный пароль"); return; }
+      sessionPass = p;
+      $("loginCard").style.display = "none";
+      $("app").style.display = "block";
+      $("logout").style.display = "inline-block";
+      loadGallery(); loadContent();
+    } catch (e) {
+      showErr("Не удалось связаться с Worker: " + e.message);
+    }
   });
   $("logout").addEventListener("click", () => { location.reload(); });
 
