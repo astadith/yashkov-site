@@ -14,8 +14,10 @@ const $ = id => document.getElementById(id);
 function saveLocal() {
   localStorage.setItem("yashkov_worker", $("workerUrl").value);
 }
+const DEFAULT_WORKER = "https://yashkov-admin.yashkov29.workers.dev";
+
 function loadLocal() {
-  $("workerUrl").value = localStorage.getItem("yashkov_worker") || "";
+  $("workerUrl").value = localStorage.getItem("yashkov_worker") || DEFAULT_WORKER;
 }
 
 async function loadGallery() {
@@ -35,6 +37,12 @@ async function loadContent() {
   renderTexts();
 }
 
+function absUrl(path) {
+  if (!path) return "";
+  if (/^https?:\/\//.test(path)) return path;
+  return SITE + "/" + String(path).replace(/^\//, "");
+}
+
 function showOk(m) { $("okMsg").textContent = m; $("okMsg").style.display = "block"; setTimeout(() => $("okMsg").style.display = "none", 4000); }
 function showErr(m) { $("errMsg").textContent = m; $("errMsg").style.display = "block"; }
 
@@ -45,7 +53,7 @@ function renderGallery() {
     const div = document.createElement("div");
     div.className = "gallery-item";
     div.innerHTML = `
-      <img src="${item.src || ''}" alt="">
+      <img src="${absUrl(item.src)}" alt="">
       <div class="meta">
         <div class="row">
           <input type="text" data-idx="${i}" data-field="cap" value="${esc(item.cap || '')}" placeholder="Подпись" style="flex:3">
