@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админка — yashkov.ru</title>
+<style>
+  :root { --bg:#faf7f2; --card:#fff; --line:#e4dbcd; --ink:#3a2e24; --acc:#b8734a; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Georgia, 'Times New Roman', serif; background:var(--bg); color:var(--ink); }
+  header { background:var(--ink); color:#f5ead9; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; }
+  header h1 { font-size:18px; margin:0; font-weight:normal; }
+  .wrap { max-width:980px; margin:0 auto; padding:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:16px; }
+  input[type=text], input[type=password], input[type=file], select, textarea {
+    width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--line); border-radius:6px;
+    font:inherit; background:#fff; }
+  label { font-size:13px; opacity:.75; }
+  button { background:var(--acc); color:#fff; border:0; border-radius:6px; padding:9px 16px;
+    font:inherit; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--acc); border:1px solid var(--acc); }
+  .tabs { display:flex; gap:8px; margin-bottom:14px; }
+  .tabs button { flex:1; background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .tabs button.active { background:var(--ink); color:#f5ead9; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .gallery-item { display:flex; gap:12px; align-items:center; border-bottom:1px solid var(--line); padding:10px 0; }
+  .gallery-item img { width:70px; height:70px; object-fit:cover; border-radius:6px; }
+  .gallery-item .meta { flex:1; }
+  .gallery-item input { margin:2px 0; }
+  .msg { padding:8px 12px; border-radius:6px; margin:8px 0; display:none; }
+  .msg.ok { display:block; background:#e8f3e6; color:#2f6b2f; }
+  .msg.err { display:block; background:#f8e3e0; color:#962e2e; }
+  .tiny { font-size:12px; opacity:.6; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Админка · yashkov.ru</h1>
+  <div><span id="userLabel" class="tiny"></span> <button class="ghost" id="logout" style="display:none">Выйти</button></div>
+</header>
+<div class="wrap">
+
+  <div class="card" id="loginCard">
+    <h2>Вход</h2>
+    <label>Пароль администратора</label>
+    <input type="password" id="pass" placeholder="••••••••">
+    <button id="loginBtn">Войти</button>
+    <div class="msg err" id="loginError"></div>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="msg ok" id="okMsg"></div>
+    <div class="msg err" id="errMsg"></div>
+
+    <div class="tabs">
+      <button id="tabGallery" class="active">Галерея</button>
+      <button id="tabTexts">Тексты</button>
+    </div>
+
+    <div class="card" id="galleryTab">
+      <h2>Картины</h2>
+      <div class="card" style="background:#f5f0e8">
+        <h3>Добавить картину</h3>
+        <div class="row">
+          <div style="flex:1"><label>Изображение</label><input type="file" id="newImg" accept="image/*"></div>
+          <div style="flex:1"><label>Категория (папка)</label>
+            <select id="newCat">
+              <option value="zhivopis">zhivopis</option>
+              <option value="grafika">grafika</option>
+              <option value="plener">plener</option>
+              <option value="studio">studio</option>
+              <option value="other">other</option>
+            </select>
+          </div>
+          <div style="flex:2"><label>Подпись (капшн)</label>
+            <input type="text" id="newCap" placeholder="Например: «Северный свет», холст, масло, 2023"></div>
+        </div>
+        <p><button id="addBtn">Добавить</button></p>
+        <p class="tiny" id="imgStatus"></p>
+      </div>
+      <h3>Существующие работы</h3>
+      <div id="galleryList"></div>
+      <p><button id="saveBtn">💾 Сохранить все изменения</button></p>
+    </div>
+
+    <div class="card" id="textsTab" style="display:none">
+      <h2>Тексты (content-data.json)</h2>
+      <p class="tiny">Добавляйте/редактируйте ключи (например: phone, email, address, about_title, about_lead). Сохранится в content-data.json и сайт подхватит.</p>
+      <div id="textsList"></div>
+      <p><button id="addTextBtn">+ Добавить поле</button></p>
+      <p><button id="saveTextsBtn">💾 Сохранить тексты</button></p>
+    </div>
+
+    <div class="card">
+      <label>URL Cloudflare Worker</label>
+      <input type="text" id="workerUrl" placeholder="https://your-worker.workers.dev">
+      <p class="tiny">Введите адрес вашего Worker после его создания. Он сохраняется в браузере.</p>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
